@@ -117,9 +117,10 @@ function updateState() {
   }
 }
 
-function mouseClicked() {
-  updateState();
-
+function mousePressed() {
+  if (mouseButton === CENTER){
+    updateState();
+  }
 }
 
 function changeBackgroundColor() {
