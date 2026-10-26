@@ -1,144 +1,107 @@
-// Project Title
-// Your Name
-// Date
-//
-// Extra for Experts:
-// - describe what you did to take this project "above and beyond"
+// Objects Assignment: Cars
+// Jennifer L
+// October 20, 2026
 
+//Global variables
+let myCar; let myTrunk;
+let startTime = 0;
 
-// global variables
-let x = 100; y = 100;
+async function setup() {
+  createCanvas(1200, 800);
+  let x = 0; let y = random(200, 400);
+  // let x = 100; let y = 300;
+  // let c = color(random(255), random(255), random(255));
 
-// 0-light blue; 1-yellow; 2-pink; 3-dark blue
-let currentBack = 0;
-
-function setup() {
-  createCanvas(900, 600);
-}
-
-function drawTrees(y, size) {
-  //draw a line of trees with spaces between
-  for (let x = size / 2; x < width; x += size + 190) {
-    ellipse(x, y, size, size * 1.2);
-
-  }
-
+  myCar = new Vehicle(0, color(random(255), random(255), random(255)), x, y, 1, 2);
+  myTrunk = new Vehicle(1, color(random(255), random(255), random(255)), x, y + 70, 0, 5);
 }
 
 function draw() {
-  //draw background
-  changeBackgroundColor();
+  background(230);
+  drawRoad();
+  myCar.display();
+  myCar.action();
+  myTrunk.display();
+  myTrunk.action();
 
-  //draw sun with changing color
-  gradientSun();
-
-  //drawCloud
-  undateEllipse();
-
-  fill("#c4dce0");
-  noStroke();
-  rect(0, 300, 900, 300);
-  fill("#eee2d9");
-  noStroke();
-  rect(0, 350, 900, 100);
-  //trees
-  fill("#80b1ce");
-  noStroke();
-  drawTrees(200, 120);
-  fill("#aa9c9d");
-  noStroke();
-  rect(50, 200, 20, 120);
-  rect(360, 200, 20, 120);
-  rect(670, 200, 20, 120);
-  
-
-  // draw character
-  fill("rgb(255, 223, 223)");
-  noStroke();
-  ellipse(mouseX, mouseY, 70, 80);
-  fill("rgb(121, 105, 109)");
-  noStroke();
-  circle(mouseX + 15, mouseY - 10, 9);
-  fill("rgb(240, 151, 156)");
-  noStroke();
-  triangle(mouseX + 30, mouseY - 10, mouseX + 40, mouseY - 15, mouseX + 30, mouseY - 20);
-  triangle(mouseX, mouseY, mouseX - 35, mouseY + 5, mouseX - 40, mouseY + 30);
-
-  // add name
-  fill("#676c7a")
-  textSize(25);
-  text("Jennifer Li", 5, 595);
 }
 
-  
-
-function gradientSun() { //color changes based on the position of the mouse
+function drawRoad() {
   noStroke();
+  fill("black");
+  rect(0, 200, 1200, 400);
 
-  let h = 50; let y = 0;
-  while (y < height) {
-    let mappedY = map(y, 0, height, 0, 255);
-    fill(mappedY, mouseX / 7, mouseY / 7);
-    circle(800, 50, 80);
-    y += h;
+  //draw dividing lines
+  let lineLength = 40;
+  for (let x = 0; x < width; x += lineLength + 20) {
+    fill("white");
+    rect(x, 400, lineLength, 2);
+  }
+}
+
+class Vehicle {
+  constructor(type, color, x, y, direction, xSpeed) {
+    this.type = type;
+    this.color = color;
+    this.x = x;
+    this.y = y;
+    this.direction = direction;
+    this.xSpeed = xSpeed;
   }
 
-  stroke(0);
+  display() {
 
-}
+    fill(this.color);
 
-function undateEllipse() {
-  //movement code
-  if (keyIsPressed) { //down
-    y += 2;
-    if (keyIsDown(LEFT_ARROW)) {
-      x -= 5;
+    switch (this.type) { //0-car; 1-trunk
+      case 0:
+        rect(this.x, this.y, 30, 10);
+        break;
+      case 1:
+        rect(this.x, this.y, 50, 40);
+        break;
     }
-    if (keyIsDown(RIGHT_ARROW)) {
-      x += 5;
+  }
+
+  move() { 
+    switch (this.direction) {
+      case 0:
+        this.x -= this.xSpeed;
+
+        if (this. x < 0){
+          this.x = width;
+        }
+        break;
+      case 1:
+        this.x += this.xSpeed;
+        if (this.x > width){
+          this.x = 0;
+        }
+        break;
     }
-    if (keyIsDown(UP_ARROW)) {
-      y -= 5;
+  }
+
+  speedUp() {
+    this.xSpeed += random(0, 5);
+  }
+
+  speedDown() {
+    this.xSpeed -= random(0, 5);
+  }
+
+  changeColor() {
+    this.color = color(random(255), random(255), random(255));
+
+  }
+
+  action() {
+    this.move();
+    if (random(100) < 1) {
+      this.speedUp();
+      this.speedDown();
+      this.changeColor();
     }
-
-  }
-  fill("white");
-  noStroke();
-  ellipse(x, y, 180, 60);
-  ellipse(x + 300, y + 20, 80, 50);
-  ellipse(x + 500, y + 20, 150, 50);
-}
-
-function updateState() {
-  currentBack++;
-  // add logic to keep variable in range 0-3
-  if (currentBack > 3) {
-    currentBack = 0;
   }
 }
 
-function mouseClicked() {
-  updateState();
-
-}
-
-function changeBackgroundColor() {
-  // inspect varialble objectType
-  // and draw one of three possible shapes on the Cnavas
-  switch (currentBack) {
-    case 0:
-      background("#e4ecf5");
-      break;
-    case 1:
-      background("#f8efd7");
-      break;
-    case 2:
-      background("#e283af");
-      break;
-    case 3:
-      background("#464a81");
-      break;
-  }
-
-}
 
