@@ -3,26 +3,36 @@
 // October 20, 2026
 
 //Global variables
-let myCar; let myTrunk;
 let startTime = 0;
+let eastbound = [];
+let westbound = [];
 
-async function setup() {
+function setup() {
   createCanvas(1200, 800);
-  let x = 0; let y = random(200, 400);
-  // let x = 100; let y = 300;
-  // let c = color(random(255), random(255), random(255));
+  let x = random(0, width); let y;
+  for (let i = 0; i < 10; i++) {
+    let c = color(random(255), random(255), random(255));
+    eastbound.push(new Vehicle(random([0, 1]), c, x + random (- width, width), random(200, 350), 1, 2));
+    westbound.push(new Vehicle(random([0, 1]), c, x + random (- width, width), random(400, 560), 0, 2));
+  }
 
-  myCar = new Vehicle(0, color(random(255), random(255), random(255)), x, y, 1, 2);
-  myTrunk = new Vehicle(1, color(random(255), random(255), random(255)), x, y + 70, 0, 5);
+
 }
 
 function draw() {
   background(230);
   drawRoad();
-  myCar.display();
-  myCar.action();
-  myTrunk.display();
-  myTrunk.action();
+  for (let i = 0; i < eastbound.length; i++) {
+    eastbound[i].display();
+    eastbound[i].action();
+  }
+
+  for (let i = 0; i < westbound.length; i++) {
+    westbound[i].display();
+    westbound[i].action();
+  }
+
+
 
 }
 
@@ -34,7 +44,7 @@ function drawRoad() {
   //draw dividing lines
   let lineLength = 40;
   for (let x = 0; x < width; x += lineLength + 20) {
-    fill("white");
+    fill("yellow");
     rect(x, 400, lineLength, 2);
   }
 }
@@ -56,6 +66,11 @@ class Vehicle {
     switch (this.type) { //0-car; 1-trunk
       case 0:
         rect(this.x, this.y, 30, 10);
+        fill("white");
+        rect(this.x + 2, this.y - 5, 5, 2);
+        rect(this.x + 20, this.y - 5, 5, 2);
+        rect(this.x + 2, this.y + 13, 5, 2);
+        rect(this.x + 20, this.y + 13, 5, 2);
         break;
       case 1:
         rect(this.x, this.y, 50, 40);
@@ -63,18 +78,18 @@ class Vehicle {
     }
   }
 
-  move() { 
+  move() {
     switch (this.direction) {
       case 0:
         this.x -= this.xSpeed;
 
-        if (this. x < 0){
+        if (this.x < 0) {
           this.x = width;
         }
         break;
       case 1:
         this.x += this.xSpeed;
-        if (this.x > width){
+        if (this.x > width) {
           this.x = 0;
         }
         break;
@@ -82,11 +97,17 @@ class Vehicle {
   }
 
   speedUp() {
-    this.xSpeed += random(0, 5);
+    if (this.xSpeed < 7) {
+      this.xSpeed += 2;
+    }
+
   }
 
   speedDown() {
-    this.xSpeed -= random(0, 5);
+    if (this.xSpeed > 2) {
+      this.xSpeed -= 2;
+
+    }
   }
 
   changeColor() {
@@ -96,12 +117,15 @@ class Vehicle {
 
   action() {
     this.move();
-    if (random(100) < 1) {
+    let r = random(100);
+    if (r < 1) {
       this.speedUp();
+    }
+    else if (r < 2) {
       this.speedDown();
+    }
+    if (r < 1) {
       this.changeColor();
     }
   }
 }
-
-
