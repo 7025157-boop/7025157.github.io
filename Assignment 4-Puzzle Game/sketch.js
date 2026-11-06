@@ -4,14 +4,19 @@
 
 // grid sized 6 * 5
 // 0 (black)       255 (white)
+let r;
 
 let grid = [
-  [255, 255, 255, 255, 255, 255],
-  [255, 255, 255, 255, 255, 255],
-  [255, 255, 255, 255, 255, 255],
-  [255, 255, 255, 255, 255, 255],
-  [255, 255, 255, 255, 255, 255]
-
+  // [255, 0, 255, 0, 255, 0],
+  // [0, 255, 0, 255, 0, 255],
+  // [255, 0, 255, 0, 255, 0],
+  // [0, 255, 0, 255, 0, 255],
+  // [255, 0, 255, 0, 255, 0]
+  [r, r, r, r, r, r],
+  [r, r, r, r, r, r],
+  [r, r, r, r, r, r],
+  [r, r, r, r, r, r],
+  [r, r, r, r, r, r]
 ];
 
 let rows = grid.length;
@@ -19,8 +24,9 @@ let cols = grid[0].length;
 const tileSize = 60;
 
 
-async function setup() {
+function setup() {
   createCanvas(cols * tileSize, rows * tileSize);
+  randomize();
 }
 
 function draw() {
@@ -28,6 +34,16 @@ function draw() {
   renderGrid();
   getCurrentX();
   getCurrentY();
+  win();
+}
+
+function randomize(){
+  for(let i = 0; i < rows; i++){
+    for(let j = 0; j < cols; j++){
+      r = grid[i][j];
+      r = random([0, 255]);
+    }
+  }
 }
 
 function getCurrentX() {
@@ -59,7 +75,7 @@ function mousePressed() {
     let y = getCurrentY();
 
     if (keyIsPressed && keyCode === 16) {
-      cheating();
+      flip(x, y);
     }
 
     if (!keyIsPressed) {
@@ -75,11 +91,11 @@ function mousePressed() {
         flip(x, y - 1);
       }
 
-      if (x + 1 <= cols) {
+      if (x + 1 < cols) {
         flip(x + 1, y);
       }
 
-      if (y + 1 <= rows) {
+      if (y + 1 < rows) {
         flip(x, y + 1);
       }
     }
@@ -102,13 +118,25 @@ function renderGrid() {
   }
 }
 
-function cheating() {
-  let x = getCurrentX();
-  let y = getCurrentY();
-  flip(x, y);
-}
 
-function win(){
+
+function win() {
+  let allsame = true;
+  let firstSquare = grid[0][0];
+  for (let i = 0; i < rows; i++) {
+    for (let j = 0; j < cols; j++) {
+      if (grid[i][j] !== firstSquare) {
+        allsame = false;
+      }
+    }
+  }
+  if (allsame === true) {
+    fill("blue");
+    textSize(48);
+    textAlign(CENTER);
+    text("you win", width / 2, height / 2);
+  }
+
 
 }
 
